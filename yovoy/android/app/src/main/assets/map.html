@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Leaflet Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        html, body, #map {
+            height: 100%;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <script>
+        // Inicializar el mapa
+        const map = L.map('map').setView([0, 0], 15); // Vista inicial (se actualizará con la ubicación del usuario)
+
+        // Añadir la capa de OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Variable para almacenar la ubicación del usuario
+        let userLocation = null;
+
+        // Función para centrar el mapa en la ubicación del usuario
+        function centerMapOnUserLocation() {
+            if (userLocation) {
+                map.setView(userLocation, 15); // Centrar el mapa en la ubicación del usuario
+            } else {
+                alert('Ubicación del usuario no disponible.');
+            }
+        }
+
+        // Obtener la ubicación del usuario
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    userLocation = [position.coords.latitude, position.coords.longitude];
+                    centerMapOnUserLocation(); // Centrar el mapa en la ubicación del usuario
+
+                    // Añadir un marcador en la ubicación del usuario
+                    L.marker(userLocation).addTo(map)
+                        .bindPopup('¡Estás aquí!')
+                        .openPopup();
+                },
+                (error) => {
+                    alert('No se pudo obtener tu ubicación: ' + error.message);
+                }
+            );
+        } else {
+            alert('Tu navegador no soporta geolocalización.');
+        }
+
+        // Escuchar mensajes desde React Native
+        window.addEventListener('message', (event) => {
+            if (event.data === 'centerMap') {
+                centerMapOnUserLocation(); // Centrar el mapa cuando se recibe el mensaje
+            }
+        });
+    </script>
+</body>
+</html>
