@@ -1,8 +1,9 @@
 import express from "express";
 import cors from "cors";
-import { getAllUsers, login, registerUsers } from "./Controllers/UsersController.js";
+import { getAllUsers, getUserProfile, login, registerUsers } from "./Controllers/UsersController.js";
 import { createCard, getCardBalance, getCardsByUser, rechargeBalance } from "./Controllers/CardController.js";
 import { createTransaction, getTransactionsByCard, transferBalance, updateTransactionStatus } from "./Controllers/TransactionController.js";
+
 
 
 //servidor
@@ -22,6 +23,7 @@ app.get("/",(_req, res)=>{
 app.post("/api/auth/register", registerUsers); // Registrar un nuevo usuario
 app.post("/api/auth/login", login); // Iniciar sesión
 app.get("/api/users", getAllUsers); // Obtener todos los usuarios
+app.get("/api/user/:userId", getUserProfile); // Sin middleware de autenticación
 
 // Endpoints de tarjetas
 app.post("/api/cards", createCard); // Crear una nueva tarjeta

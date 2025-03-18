@@ -1,5 +1,4 @@
 import { UserModel } from "../Models/UsersModel.js";
-import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 // Registro de usuarios
@@ -18,14 +17,11 @@ export const registerUsers = async (req, res) => {
             return res.status(400).json({ msg: "El correo ya está registrado" });
         }
 
-        // Encriptar la contraseña
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        // Crear el usuario
+        // Crear el usuario (sin encriptar la contraseña)
         const user = await UserModel.create({
             name,
             email,
-            password: hashedPassword, // Guardar la contraseña encriptada
+            password, // Guardar la contraseña en texto plano
         });
 
         // Respuesta exitosa
@@ -59,9 +55,8 @@ export const login = async (req, res) => {
             return res.status(400).json({ msg: "El usuario no existe" });
         }
 
-        // Verificar la contraseña
-        const isPasswordValid = await bcrypt.compare(password, user.password);
-        if (!isPasswordValid) {
+        // Verificar la contraseña (comparación en texto plano)
+        if (password !== user.password) {
             return res.status(400).json({ msg: "Contraseña incorrecta" });
         }
 
@@ -100,5 +95,19 @@ export const getAllUsers = async (_req, res) => {
     } catch (error) {
         console.error(error);
         return res.status(500).json({ msg: "Error al obtener usuarios" });
+    }
+};
+
+export const getUserProfile = async (req, res) => {
+    try {
+        const userId = req.params.userId; // Obtener el userId desde los parámetros de la URL
+        const user = await UserModel.findById(userId, { password: 0 }); // Excluir la contraseña
+        if (!user) {
+            return res.status(404).json({ msg: "Usuario no encontrado" });
+        }
+        return res.status(200).json({ user });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ msg: "Error al obtener el perfil del usuario" });
     }
 };

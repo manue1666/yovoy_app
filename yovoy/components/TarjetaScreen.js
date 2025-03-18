@@ -4,7 +4,7 @@ import { View, Text, StyleSheet } from 'react-native';
 
 const TarjetaScreen = () => (
   <View style={styles.container}>
-    <Text style={styles.text}>Esta es la vista de Tarjetas</Text>
+    <Text style={styles.text}>Esta es la vista de Tarjetotas</Text>
   </View>
 );
 
