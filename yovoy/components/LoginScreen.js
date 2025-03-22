@@ -15,7 +15,7 @@ const LoginScreen = ({ navigation }) => {
             }
 
             // Hacer la solicitud al backend
-            const response = await fetch("http://192.168.1.78:4000/api/auth/login", {
+            const response = await fetch("http://192.168.1.81:4000/api/auth/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, password }),

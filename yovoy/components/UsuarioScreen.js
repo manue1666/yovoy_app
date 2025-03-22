@@ -20,7 +20,7 @@ const UsuarioScreen = () => {
       }
 
       // Hacer una solicitud al backend para obtener los datos del usuario
-      const response = await fetch(`http://192.168.1.78:4000/api/user/${userId}`, {
+      const response = await fetch(`http://192.168.1.81:4000/api/user/${userId}`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,

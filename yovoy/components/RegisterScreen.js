@@ -15,7 +15,7 @@ const RegisterScreen = ({ navigation }) => {
             }
 
             // Hacer la solicitud al backend
-            const response = await fetch("http://192.168.1.78:4000/api/auth/register", {
+            const response = await fetch("http://192.168.1.81:4000/api/auth/register", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ name, email, password }),
