@@ -8,7 +8,7 @@ const CardSchema = new Schema({
         ref:"users"
     },
     cardNum: {
-        type: Number,
+        type: String,
         required: true,
         unique: true, // Asegura que el número de tarjeta sea único
     },

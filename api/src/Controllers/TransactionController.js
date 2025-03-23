@@ -62,29 +62,33 @@ export const createTransaction = async (req, res) => {
 export const getTransactionsByCard = async (req, res) => {
     try {
         const { cardId } = req.params;
+        console.log('Card ID recibido:', cardId); // Log para depuración
 
-        // Validar que el cardId esté presente
         if (!cardId) {
             return res.status(400).json({ msg: "Se requiere el ID de la tarjeta" });
         }
 
-        // Buscar las transacciones de la tarjeta
-        const transactions = await TransactionModel.find({ cardId }).sort({ timestamp: -1 }); // Ordenar por fecha descendente
-        if (transactions.length === 0) {
-            return res.status(404).json({ msg: "No se encontraron transacciones para esta tarjeta" });
+        // Verificar si la tarjeta existe
+        const card = await CardModel.findById(cardId);
+        if (!card) {
+            console.log('Tarjeta no encontrada'); // Log para depuración
+            return res.status(404).json({ msg: "Tarjeta no encontrada" });
         }
 
-        // Respuesta exitosa
+        // Buscar las transacciones de la tarjeta
+        const transactions = await TransactionModel.find({ cardId }).sort({ timestamp: -1 });
+        console.log('Transacciones encontradas:', transactions); // Log para depuración
+
+        // Devolver un array vacío si no hay transacciones
         return res.status(200).json({
             msg: "Transacciones obtenidas con éxito",
-            transactions,
+            transactions: transactions || [], // Devolver un array vacío si no hay transacciones
         });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ msg: "Hubo un error al obtener las transacciones" });
     }
 };
-
 // Actualizar el estado de una transacción
 export const updateTransactionStatus = async (req, res) => {
     try {
@@ -124,7 +128,8 @@ export const updateTransactionStatus = async (req, res) => {
 
 export const transferBalance = async (req, res) => {
     try {
-        const { sourceCardId, targetCardId, amount } = req.body;
+        const { sourceCardId, targetCardId, amount } = req.body; // Cambiar a targetCardId
+        console.log('Datos recibidos:', { sourceCardId, targetCardId, amount }); // Log para depuración
 
         // Validar que los datos estén completos
         if (!sourceCardId || !targetCardId || !amount) {
@@ -136,16 +141,23 @@ export const transferBalance = async (req, res) => {
             return res.status(400).json({ msg: "El monto debe ser mayor que 0" });
         }
 
-        // Buscar las tarjetas de origen y destino
+        // Buscar la tarjeta de origen
         const sourceCard = await CardModel.findById(sourceCardId);
-        const targetCard = await CardModel.findById(targetCardId);
+        if (!sourceCard) {
+            console.log('Tarjeta de origen no encontrada'); // Log para depuración
+            return res.status(404).json({ msg: "Tarjeta de origen no encontrada" });
+        }
 
-        if (!sourceCard || !targetCard) {
-            return res.status(404).json({ msg: "Tarjeta no encontrada" });
+        // Buscar la tarjeta de destino por su _ID
+        const targetCard = await CardModel.findById(targetCardId);
+        if (!targetCard) {
+            console.log('Tarjeta de destino no encontrada'); // Log para depuración
+            return res.status(404).json({ msg: "Tarjeta de destino no encontrada" });
         }
 
         // Verificar que el saldo sea suficiente en la tarjeta de origen
         if (sourceCard.cardBal < amount) {
+            console.log('Saldo insuficiente'); // Log para depuración
             return res.status(400).json({ msg: "Saldo insuficiente" });
         }
 
@@ -160,11 +172,13 @@ export const transferBalance = async (req, res) => {
         // Registrar la transacción de transferencia
         const transaction = await TransactionModel.create({
             cardId: sourceCardId,
-            targetCardId, // Tarjeta de destino
+            targetCardId: targetCard._id, // Usar el ID de la tarjeta de destino
             amount,
             type: "transferencia",
             status: "completada",
         });
+
+        console.log('Transferencia realizada con éxito:', transaction); // Log para depuración
 
         // Respuesta exitosa
         return res.status(201).json({
@@ -172,7 +186,7 @@ export const transferBalance = async (req, res) => {
             transaction,
         });
     } catch (error) {
-        console.error(error);
+        console.error('Error en transferBalance:', error); // Log para depuración
         return res.status(500).json({ msg: "Hubo un error al realizar la transferencia" });
     }
 };

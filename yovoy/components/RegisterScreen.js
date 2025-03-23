@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from "react-native";
+import { API_BASE_URL } from '@env';
+
 
 const RegisterScreen = ({ navigation }) => {
     const [name, setName] = useState("");
@@ -15,7 +17,7 @@ const RegisterScreen = ({ navigation }) => {
             }
 
             // Hacer la solicitud al backend
-            const response = await fetch("http://192.168.1.81:4000/api/auth/register", {
+            const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ name, email, password }),

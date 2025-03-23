@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { API_BASE_URL } from '@env';
 
 const LoginScreen = ({ navigation }) => {
     const [email, setEmail] = useState("");
@@ -15,7 +16,7 @@ const LoginScreen = ({ navigation }) => {
             }
 
             // Hacer la solicitud al backend
-            const response = await fetch("http://192.168.1.81:4000/api/auth/login", {
+            const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, password }),

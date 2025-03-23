@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, ScrollView, ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { API_BASE_URL } from '@env';
+
 
 const UsuarioScreen = () => {
   const [user, setUser] = useState(null);
@@ -20,7 +22,7 @@ const UsuarioScreen = () => {
       }
 
       // Hacer una solicitud al backend para obtener los datos del usuario
-      const response = await fetch(`http://192.168.1.81:4000/api/user/${userId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/user/${userId}`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
