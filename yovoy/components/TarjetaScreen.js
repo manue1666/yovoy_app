@@ -5,8 +5,8 @@ import CardInfo from './TarjetaComponents/CardInfo';
 import CreateCardButton from './TarjetaComponents/CreateCardButton';
 import BalanceButton from './TarjetaComponents/BalanceButton';
 import RechargeModal from './TarjetaComponents/RechargeModal';
-import TransactionHistory from './TarjetaComponents/TransactionHistory'; // Importar el componente de historial
-import TransferModal from './TarjetaComponents/TransferModal'; // Importar el componente de transferencia
+import TransactionHistory from './TarjetaComponents/TransactionHistory'; 
+import TransferModal from './TarjetaComponents/TransferModal'; 
 import { API_BASE_URL } from '@env';
 
 
@@ -14,10 +14,9 @@ const TarjetaScreen = () => {
   const [userId, setUserId] = useState(null);
   const [token, setToken] = useState(null);
   const [card, setCard] = useState(null);
-  const [isRechargeModalVisible, setIsRechargeModalVisible] = useState(false); // Estado para el modal de recarga
-  const [isTransactionHistoryVisible, setIsTransactionHistoryVisible] = useState(false); // Estado para el modal de historial
-  const [isTransferModalVisible, setIsTransferModalVisible] = useState(false); // Estado para el modal de transferencia
-
+  const [isRechargeModalVisible, setIsRechargeModalVisible] = useState(false); 
+  const [isTransactionHistoryVisible, setIsTransactionHistoryVisible] = useState(false); 
+  const [isTransferModalVisible, setIsTransferModalVisible] = useState(false); 
   useEffect(() => {
     const fetchUserData = async () => {
       const userId = await AsyncStorage.getItem('userId');
